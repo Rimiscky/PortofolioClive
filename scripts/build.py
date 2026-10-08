@@ -1,11 +1,17 @@
 """Construit le portfolio statique de Clive Gouala (aucune dépendance externe)."""
 from __future__ import annotations
 
+import hashlib
 import html
 import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def asset_version(name: str) -> str:
+    """Empreinte du fichier : change l'URL à chaque modification pour contourner les caches (Hostinger, navigateur)."""
+    return hashlib.sha256((ROOT / 'assets' / name).read_bytes()).hexdigest()[:10]
 
 PROJECTS = [
     dict(slug="interim-industries", title="Interim Industries", category="Logos", cover=6,
@@ -91,7 +97,7 @@ def layout(title: str, description: str, active: str, body: str) -> str:
     page = f'''<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="{e(description)}"><meta name="robots" content="noindex, nofollow">
-<title>{e(title)} · Clive Gouala</title><link rel="stylesheet" href="/assets/style.css">
+<title>{e(title)} · Clive Gouala</title><link rel="stylesheet" href="/assets/style.css?v={asset_version('style.css')}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"></head>
 <body><a class="skip" href="#contenu">Aller au contenu</a>
 <header class="site-header"><div class="shell nav-shell"><a class="wordmark" href="/index.html" aria-label="Clive Gouala, accueil">CLIVE<span>GOUALA</span><i>®</i></a>
@@ -100,7 +106,7 @@ def layout(title: str, description: str, active: str, body: str) -> str:
 <main id="contenu">{body}</main>
 <footer class="footer"><div class="shell"><div class="footer-top"><p>Une idée en tête ?<br><a href="mailto:sigmosart@gmail.com">Créons quelque chose <span>ensemble ↗</span></a></p></div>
 <div class="footer-bottom"><span>© Clive Gouala · Portfolio</span><span>Réalisateur vidéo · Designer graphique · Photographe</span><a href="#contenu">Retour en haut ↑</a></div></div></footer>
-<script src="/assets/app.js" defer></script></body></html>'''
+<script src="/assets/app.js?v={asset_version('app.js')}" defer></script></body></html>'''
     return page.replace('↗', ARROW)
 
 
@@ -122,6 +128,7 @@ def home() -> str:
 <p class="cover-sub" lang="en"><strong>here</strong> <em>is my</em> <strong>creative process</strong></p>
 <p class="hero-intro">Je donne forme aux identités, aux images et aux histoires qui méritent d'être vues.</p>
 <div class="hero-actions"><a class="button button-primary" href="/projets.html">Explorer mon travail <span aria-hidden="true">↗</span></a><a class="text-link" href="/a-propos.html">Faire connaissance <span aria-hidden="true">↗</span></a></div>
+<figure class="cover-photo"><img src="/assets/media/hero-photo.webp" width="593" height="950" alt="Photographie éditoriale de la série plage figurant dans le portfolio de Clive Gouala" fetchpriority="high"></figure>
 <div class="cover-bottom"><div><p class="pill">Clive GOUALA</p><ul><li>Réalisateur vidéo</li><li>Designer graphique</li><li>Photographe</li></ul></div>
 <ul><li>Logo</li><li>Packaging</li><li>Branding</li></ul><ul><li>Social media</li><li>Print ready designs</li><li>Clip vidéo</li></ul></div></div></section>
 <div class="marquee" role="group" aria-label="Domaines de création"><div class="marquee-track"><div class="marquee-set">{categories}</div><div class="marquee-set marquee-copy" aria-hidden="true">{categories}</div></div></div>
@@ -209,6 +216,21 @@ def not_found() -> str:
     return layout('Page introuvable', 'Cette page est introuvable.', '', body)
 
 
+HTACCESS = '''DirectoryIndex index.html
+Options -Indexes
+ErrorDocument 404 /404.html
+# Les pages sont toujours revalidées ; CSS/JS portent une empreinte (?v=) et peuvent être mis en cache.
+<IfModule mod_headers.c>
+  <FilesMatch "\\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+'''
+
+
 def build_site(destination: Path) -> None:
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
@@ -223,7 +245,7 @@ def build_site(destination: Path) -> None:
     for index, project in enumerate(PROJECTS):
         (project_dir / f"{project['slug']}.html").write_text(project_page(project, index), encoding='utf-8')
     # Hostinger (LiteSpeed/Apache) : servir index.html à la racine plutôt qu'un 403.
-    (destination / '.htaccess').write_text('DirectoryIndex index.html\nOptions -Indexes\nErrorDocument 404 /404.html\n', encoding='utf-8')
+    (destination / '.htaccess').write_text(HTACCESS, encoding='utf-8')
 
 
 if __name__ == '__main__':

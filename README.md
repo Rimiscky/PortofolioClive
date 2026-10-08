@@ -18,7 +18,7 @@ python3 scripts/build.py
 python3 -m http.server 8000 --directory dist
 ```
 
-Puis ouvrir `http://localhost:8000`. L'hébergement statique doit servir **le contenu de `dist/` à la racine du domaine** (les liens et médias sont absolus depuis `/`). Aucun workflow ne publie automatiquement le site.
+Puis ouvrir `http://localhost:8000`. Le domaine cible communiqué est **`clive.rimiscky.fr` (Hostinger)**, mais sa configuration et le déploiement restent à faire ultérieurement, avec autorisation distincte. L'hébergement statique doit servir **le contenu de `dist/` à la racine du sous-domaine** (les liens et médias sont absolus depuis `/`). Aucun workflow ne publie automatiquement le site.
 
 ## Tests
 

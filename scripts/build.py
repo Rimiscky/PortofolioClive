@@ -114,32 +114,32 @@ def home() -> str:
 <p class="hero-intro">Je suis Clive Gouala. Je donne forme aux identités, aux images et aux histoires qui méritent d'être vues.</p>
 <div class="hero-actions"><a class="button button-primary" href="/projets.html">Explorer mon travail <span aria-hidden="true">↗</span></a><a class="text-link" href="/a-propos.html">Faire connaissance <span aria-hidden="true">↗</span></a></div>
 <div class="hero-bottom"><span>Réalisateur vidéo<br>Designer graphique<br>Photographe</span><span>Défiler pour explorer ↓</span></div></div>
-<div class="hero-visual"><div class="hero-photo"><img src="/assets/media/hero-photo.webp" width="640" height="1020" alt="Photographie éditoriale de la série plage figurant dans le portfolio de Clive Gouala" fetchpriority="high"></div>
+<div class="hero-visual"><div class="hero-photo"><img src="/assets/media/hero-photo.webp" width="593" height="950" alt="Photographie éditoriale de la série plage figurant dans le portfolio de Clive Gouala" fetchpriority="high"></div>
 <div class="hero-stamp" aria-hidden="true"><span>CREATIVE<br>VISION</span><b>CG.</b></div><span class="vertical-caption">L'IMAGE A QUELQUE CHOSE À RACONTER · 2026</span></div></section>
-<div class="marquee" aria-label="Domaines de création"><div class="shell">{categories}</div></div>
+<div class="marquee" role="group" aria-label="Domaines de création"><div class="shell">{categories}</div></div>
 <section class="section shell" aria-labelledby="work-title"><div class="section-heading"><div><p class="kicker">01 / Sélection</p><h2 id="work-title">Projets <em>choisis.</em></h2></div><a class="text-link dark" href="/projets.html">Tout voir <span aria-hidden="true">↗</span></a></div>
 <div class="project-grid">{work}</div><a class="mobile-more" href="/projets.html">Voir tous les projets ↗</a></section>
 <section class="manifesto"><div class="shell manifesto-grid"><p class="kicker">02 / La démarche</p><div><p>Une belle image attire le regard.<br><em>Une intention claire</em> lui donne du sens.</p>
 <a class="button button-outline" href="/a-propos.html">Découvrir mon parcours ↗</a></div></div></section>
 <section class="section shell discipline"><p class="kicker">03 / Domaines</p><h2>Des idées au <em>rendu final.</em></h2>
-<div class="discipline-list"><a href="/projets.html#galerie">01 <strong>Identité & branding</strong><span>↗</span></a><a href="/projets.html#galerie">02 <strong>Design graphique & print</strong><span>↗</span></a><a href="/projets.html#galerie">03 <strong>Photographie & vidéo</strong><span>↗</span></a></div></section>'''
+<div class="discipline-list"><a href="/projets.html#filtre=Identit%C3%A9">01 <strong>Identité &amp; branding</strong><span>↗</span></a><a href="/projets.html#filtre=%C3%89dition">02 <strong>Design graphique &amp; print</strong><span>↗</span></a><a href="/projets.html#filtre=Photographie">03 <strong>Photographie &amp; vidéo</strong><span>↗</span></a></div></section>'''
     return layout('Accueil', 'Clive Gouala : vidéo, design graphique, photographie. Découvrez une sélection de réalisations.', 'index.html', body)
 
 
 def projects_page() -> str:
     filters = ''.join(f'<button type="button" data-filter="{e(c)}" aria-pressed="{str(c == "Tous").lower()}">{e(c)}</button>' for c in CATEGORIES)
     cards = ''.join(card(p, i + 1) for i, p in enumerate(PROJECTS))
-    body = f'''<section class="page-intro shell"><p class="kicker">Index / 01—11</p><h1>Un travail à <em>explorer.</em></h1>
+    body = f'''<section class="page-intro shell"><p class="kicker">Index / 01-{len(PROJECTS):02d}</p><h1>Un travail à <em>explorer.</em></h1>
 <p>Identités, images, éditions et expériences visuelles. Parcourez les projets présentés dans mon book.</p></section>
 <section class="section shell gallery-section" id="galerie" aria-label="Galerie de projets"><div class="filters" role="group" aria-label="Filtrer les projets">{filters}</div>
-<p class="result-count" aria-live="polite">11 projets</p><div class="project-grid gallery-grid">{cards}</div><p class="empty" hidden>Aucun projet dans cette catégorie.</p></section>'''
+<p class="result-count" aria-live="polite">{len(PROJECTS)} projets</p><div class="project-grid gallery-grid">{cards}</div><p class="empty" hidden>Aucun projet dans cette catégorie.</p></section>'''
     return layout('Projets', 'Parcourez les réalisations de Clive Gouala : logos, identité, packaging, photographie et édition.', 'projets.html', body)
 
 
 def project_page(p: dict, index: int) -> str:
     prev = PROJECTS[(index - 1) % len(PROJECTS)]
     nxt = PROJECTS[(index + 1) % len(PROJECTS)]
-    images = ''.join(f'<figure class="case-figure"><a href="/assets/media/folio-{n:02d}.webp" target="_blank" rel="noopener" aria-label="Agrandir la planche {i + 1} de {e(p["title"])}">{picture(n, f"Planche {i + 1} du projet {p["title"]}")}</a><figcaption>Planche {i + 1:02d} / {e(p["title"])} · toucher pour agrandir</figcaption></figure>' for i, n in enumerate(p['images']))
+    images = ''.join(f'<figure class="case-figure"><a href="/assets/media/folio-{n:02d}.webp" target="_blank" rel="noopener" aria-label="Agrandir la planche {i + 1} de {e(p["title"])}">{picture(n, f"Planche {i + 1} du projet {p["title"]}")}</a><figcaption>Planche {i + 1:02d} / {e(p["title"])} · ouvrir en grand</figcaption></figure>' for i, n in enumerate(p['images']))
     body = f'''<div class="case-head shell"><a class="back-link" href="/projets.html">← Tous les projets</a><p class="kicker">{e(p['category'])} / Projet {index + 1:02d}</p>
 <h1>{e(p['title'])}<span class="orange-dot">.</span></h1><div class="case-details"><p>{e(p['intro'])}</p><dl><div><dt>Discipline</dt><dd>{e(p['category'])}</dd></div><div><dt>Présenté dans le book</dt><dd>{e(p['scope'])}</dd></div></dl></div></div>
 <div class="case-media shell">{images}</div><nav class="case-pagination shell" aria-label="Projets adjacents"><a href="/projets/{e(prev['slug'])}.html"><small>← Projet précédent</small><strong>{e(prev['title'])}</strong></a><a href="/projets/{e(nxt['slug'])}.html"><small>Projet suivant →</small><strong>{e(nxt['title'])}</strong></a></nav>'''
@@ -168,13 +168,21 @@ def contact() -> str:
     return layout('Contact', 'Contactez Clive Gouala pour un projet de design, photographie ou réalisation vidéo.', 'contact.html', body)
 
 
+def not_found() -> str:
+    body = '''<section class="contact-page shell"><p class="kicker">Erreur 404</p><h1>Page<br><em>introuvable.</em></h1>
+<p>Cette page n'existe pas ou a été déplacée.</p>
+<a class="button button-primary" href="/projets.html">Voir les projets ↗</a></section>'''
+    return layout('Page introuvable', 'Cette page est introuvable.', '', body)
+
+
 def build_site(destination: Path) -> None:
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     assets = destination / 'assets'
     shutil.copytree(ROOT / 'assets', assets, dirs_exist_ok=True)
     for filename, content in [('index.html', home()), ('projets.html', projects_page()),
-                              ('a-propos.html', about()), ('contact.html', contact())]:
+                              ('a-propos.html', about()), ('contact.html', contact()),
+                              ('404.html', not_found())]:
         (destination / filename).write_text(content, encoding='utf-8')
     project_dir = destination / 'projets'
     project_dir.mkdir(exist_ok=True)
@@ -185,5 +193,6 @@ def build_site(destination: Path) -> None:
 
 
 if __name__ == '__main__':
+    shutil.rmtree(ROOT / 'dist', ignore_errors=True)  # évite de publier des pages obsolètes
     build_site(ROOT / 'dist')
     print('Site prêt dans dist/')

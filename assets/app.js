@@ -17,6 +17,9 @@
     nav.addEventListener('click', event => {
       if (event.target.closest('a')) close();
     });
+    document.addEventListener('click', event => {
+      if (nav.classList.contains('open') && !nav.contains(event.target) && !menu.contains(event.target)) close();
+    });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') {
         close();
@@ -28,19 +31,34 @@
   const buttons = [...document.querySelectorAll('[data-filter]')];
   const cards = [...document.querySelectorAll('.gallery-grid .project-card')];
   const count = document.querySelector('.result-count');
+  const empty = document.querySelector('.empty');
   if (buttons.length && cards.length && count) {
-    buttons.forEach(button => button.addEventListener('click', () => {
-      const selected = button.dataset.filter;
+    const apply = (selected, updateUrl) => {
+      const button = buttons.find(item => item.dataset.filter === selected) || buttons[0];
+      selected = button.dataset.filter;
       buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
       let visible = 0;
       cards.forEach(card => {
         card.hidden = selected !== 'Tous' && card.dataset.category !== selected;
-        if (!card.hidden) visible++;
+        // Décalage en quinconce calculé sur les cartes visibles, pas sur l'ordre du DOM.
+        card.classList.toggle('is-offset', !card.hidden && visible++ % 2 === 1);
       });
       count.textContent = visible + (visible === 1 ? ' projet' : ' projets');
-      const empty = document.querySelector('.empty');
       if (empty) empty.hidden = visible !== 0;
-    }));
+      if (updateUrl) {
+        const hash = selected === 'Tous' ? '' : '#filtre=' + encodeURIComponent(selected);
+        history.replaceState(null, '', location.pathname + location.search + hash);
+      }
+    };
+    const fromHash = () => {
+      const match = location.hash.match(/^#filtre=(.+)$/);
+      let value = 'Tous';
+      if (match) { try { value = decodeURIComponent(match[1]); } catch (_) { /* hash invalide */ } }
+      apply(value, false);
+    };
+    buttons.forEach(button => button.addEventListener('click', () => apply(button.dataset.filter, true)));
+    window.addEventListener('hashchange', fromHash);
+    fromHash();
   }
   const photoLinks = [...document.querySelectorAll('.case-figure a')];
   if (photoLinks.length && typeof HTMLDialogElement !== 'undefined') {

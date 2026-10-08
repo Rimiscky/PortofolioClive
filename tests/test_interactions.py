@@ -172,6 +172,35 @@ class InteractionTests(unittest.TestCase):
         self.assertEqual(page.locator('.gallery-grid .project-card:visible').count(), 11)
         page.close()
 
+    def test_filter_can_be_opened_from_url_and_updates_it(self):
+        page = self.browser.new_page(viewport={'width': 1440, 'height': 900})
+        page.goto(self.base + '/projets.html#filtre=Identit%C3%A9')
+        self.assertEqual(page.get_by_role('button', name='Identité').get_attribute('aria-pressed'), 'true')
+        self.assertEqual(page.locator('.result-count').text_content(), '2 projets')
+        page.get_by_role('button', name='Logos').click()
+        self.assertIn('#filtre=Logos', page.url)
+        page.get_by_role('button', name='Tous').click()
+        self.assertNotIn('#filtre', page.url)
+        page.close()
+
+    def test_stagger_follows_visible_cards_after_filtering(self):
+        page = self.browser.new_page(viewport={'width': 1440, 'height': 900})
+        page.goto(self.base + '/projets.html')
+        page.get_by_role('button', name='Social media').click()
+        offsets = page.locator('.gallery-grid .project-card:visible').evaluate_all(
+            '(cards) => cards.map(c => c.classList.contains("is-offset"))')
+        self.assertEqual(offsets, [False, True])
+        page.close()
+
+    def test_mobile_menu_closes_on_outside_click(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812})
+        page.goto(self.base + '/index.html')
+        menu = page.locator('.menu-toggle')
+        menu.click()
+        page.mouse.click(180, 700)
+        self.assertEqual(menu.get_attribute('aria-expanded'), 'false')
+        page.close()
+
 
 if __name__ == '__main__':
     unittest.main()

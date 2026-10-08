@@ -12,7 +12,7 @@ class PortfolioSiteTests(unittest.TestCase):
             out = Path(tmp)
             build_site(out)
             for page in ("index.html", "projets.html", "a-propos.html", "contact.html",
-                         "projets/interim-industries.html", "projets/les-delices-de-md.html"):
+                         "404.html", "projets/interim-industries.html", "projets/les-delices-de-md.html"):
                 self.assertTrue((out / page).exists(), page)
             home = (out / "index.html").read_text(encoding="utf-8")
             self.assertIn("Clive Gouala", home)

@@ -189,7 +189,7 @@ def build_site(destination: Path) -> None:
     for index, project in enumerate(PROJECTS):
         (project_dir / f"{project['slug']}.html").write_text(project_page(project, index), encoding='utf-8')
     # Hostinger (LiteSpeed/Apache) : servir index.html à la racine plutôt qu'un 403.
-    (destination / '.htaccess').write_text('DirectoryIndex index.html\nOptions -Indexes\n', encoding='utf-8')
+    (destination / '.htaccess').write_text('DirectoryIndex index.html\nOptions -Indexes\nErrorDocument 404 /404.html\n', encoding='utf-8')
 
 
 if __name__ == '__main__':

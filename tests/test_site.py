@@ -54,7 +54,16 @@ class PortfolioSiteTests(unittest.TestCase):
                 p = Links(); p.feed(html.read_text(encoding='utf-8'))
                 self.assertFalse(p.bad_images, f'{html}: {p.bad_images}')
                 for link in p.links:
-                    self.assertTrue((out / link.lstrip('/').split('#')[0]).exists(), f'{html}: {link}')
+                    self.assertTrue((out / link.lstrip('/').split('#')[0].split('?')[0]).exists(), f'{html}: {link}')
+
+    def test_css_and_js_urls_change_with_their_content(self):
+        # Une empreinte dans l'URL évite qu'un cache (Hostinger, navigateur) serve une ancienne feuille de style.
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp); build_site(out)
+            home = (out / 'index.html').read_text(encoding='utf-8')
+            self.assertRegex(home, r'/assets/style\.css\?v=[0-9a-f]{10}"')
+            self.assertRegex(home, r'/assets/app\.js\?v=[0-9a-f]{10}"')
+            self.assertIn('no-cache', (out / '.htaccess').read_text(encoding='utf-8'))
 
     def test_no_symbols_rendered_as_emoji_on_mobile(self):
         # ↗ et ✳ ont une présentation emoji sur iOS/Android : on utilise des SVG à la place.

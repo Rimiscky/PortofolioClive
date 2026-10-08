@@ -149,3 +149,12 @@
 
 /* Icônes SVG en ligne (remplacent les caractères flèches rendus en emoji sur mobile). */
 .icon{display:inline-block;width:.9em;height:.9em;vertical-align:-.08em;flex:none}
+
+/* Photo de la couverture : dans le flux sur mobile/tablette, à droite sur grand écran. */
+.cover-photo{margin:0 0 40px;width:100%;max-width:440px;height:clamp(300px,80vw,420px);overflow:hidden;box-shadow:0 30px 60px -25px rgba(0,0,0,.7)}
+.cover-photo img{width:100%;height:100%;object-fit:cover;object-position:center 26%;display:block}
+@media(min-width:1050px){.cover-photo{position:absolute;right:var(--gutter);top:clamp(70px,13vh,140px);width:clamp(260px,25vw,380px);max-width:none;height:auto;aspect-ratio:593/950;margin:0;transform:rotate(2.5deg)}}
+@media(prefers-reduced-motion:no-preference){
+  @keyframes photo-arrive{from{opacity:0;translate:0 30px;scale:1.03}to{opacity:1;translate:0 0;scale:1}}
+  .cover-photo{animation:photo-arrive 1s cubic-bezier(.2,.8,.2,1) .3s both}
+}

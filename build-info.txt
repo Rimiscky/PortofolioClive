@@ -1,0 +1,49 @@
+Commit source : ce10b86fe3d7c3bc4c9022f25b9cc2a5934f43d0
+Branche       : main
+Construit le  : 2026-10-08 05:05:30 UTC
+Run Actions   : https://github.com/Rimiscky/PortofolioClive/actions/runs/37730626866
+
+Fichiers :
+./.htaccess
+./404.html
+./a-propos.html
+./assets/app.js
+./assets/favicon.svg
+./assets/media/clive-portrait.webp
+./assets/media/folio-06.webp
+./assets/media/folio-07.webp
+./assets/media/folio-08.webp
+./assets/media/folio-09.webp
+./assets/media/folio-11.webp
+./assets/media/folio-12.webp
+./assets/media/folio-13.webp
+./assets/media/folio-14.webp
+./assets/media/folio-15.webp
+./assets/media/folio-17.webp
+./assets/media/folio-19.webp
+./assets/media/folio-20.webp
+./assets/media/folio-21.webp
+./assets/media/folio-23.webp
+./assets/media/folio-24.webp
+./assets/media/folio-25.webp
+./assets/media/folio-27.webp
+./assets/media/folio-28.webp
+./assets/media/folio-29.webp
+./assets/media/folio-31.webp
+./assets/media/folio-32.webp
+./assets/media/hero-photo.webp
+./assets/style.css
+./contact.html
+./index.html
+./projets.html
+./projets/affiches-sigmos.html
+./projets/believe-agency.html
+./projets/canaan-holding.html
+./projets/interim-industries.html
+./projets/la-marque.html
+./projets/les-delices-de-md.html
+./projets/mascotte-btp.html
+./projets/ng-photography.html
+./projets/photographie-editoriale.html
+./projets/sigmos-agency.html
+./projets/so-sweet.html

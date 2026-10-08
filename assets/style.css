@@ -115,7 +115,7 @@
 }
 
 /* À propos : nom en grand, compétences logicielles avec jauges. */
-.about-name{font-size:clamp(4rem,16vw,11rem);line-height:.88;letter-spacing:-.06em;color:var(--orange);font-weight:900;margin:22px 0 18px}
+.page-intro .about-name{font-size:clamp(4rem,16vw,11rem);line-height:.88;letter-spacing:-.06em;color:var(--orange);font-weight:900;margin:22px 0 18px}
 .about-name span{color:inherit}
 .about-roles{font-size:clamp(1rem,2.2vw,1.45rem);margin:0}.about-roles span{color:var(--orange);margin-inline:.35em}
 .about-copy h3,.skills-columns h3{font-size:1.05rem;color:#c15124;margin:34px 0 10px}

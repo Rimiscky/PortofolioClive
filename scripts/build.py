@@ -99,7 +99,7 @@ def layout(title: str, description: str, active: str, body: str) -> str:
 
 def card(p: dict, index: int, featured=False) -> str:
     image = picture(p['cover'], f"Planche du projet {p['title']} : {p['scope']}")
-    return f'''<article class="project-card {'featured' if featured else ''}" data-category="{e(p['category'])}">
+    return f'''<article class="project-card {'featured' if featured else ''}" data-reveal data-category="{e(p['category'])}">
 <a class="project-link" href="/projets/{e(p['slug'])}.html" aria-label="Voir le projet {e(p['title'])}">
 <div class="project-image">{image}<span class="card-arrow" aria-hidden="true">↗</span></div>
 <div class="project-meta"><span>{index:02d} / {e(p['category'])}</span><span>{e(p['scope'])}</span></div>
@@ -110,18 +110,21 @@ def home() -> str:
     work = ''.join(card(p, i + 1, i == 0) for i, p in enumerate(PROJECTS[:6]))
     categories = ''.join(f'<span>{e(c)}</span>' for c in CATEGORIES[1:])
     body = f'''<section class="hero shell"><div class="hero-copy"><p class="eyebrow"><span class="eyebrow-dot"></span>Portfolio créatif / 2026</p>
-<h1>Des idées.<br>Des images.<br><em>De l'impact.</em></h1>
+<h1 class="hero-title"><span class="line"><span>Des idées.</span></span> <span class="line"><span>Des images.</span></span> <span class="line"><span><em>De l'impact.</em></span></span></h1>
 <p class="hero-intro">Je suis Clive Gouala. Je donne forme aux identités, aux images et aux histoires qui méritent d'être vues.</p>
 <div class="hero-actions"><a class="button button-primary" href="/projets.html">Explorer mon travail <span aria-hidden="true">↗</span></a><a class="text-link" href="/a-propos.html">Faire connaissance <span aria-hidden="true">↗</span></a></div>
 <div class="hero-bottom"><span>Réalisateur vidéo<br>Designer graphique<br>Photographe</span><span>Défiler pour explorer ↓</span></div></div>
 <div class="hero-visual"><div class="hero-photo"><img src="/assets/media/hero-photo.webp" width="593" height="950" alt="Photographie éditoriale de la série plage figurant dans le portfolio de Clive Gouala" fetchpriority="high"></div>
 <div class="hero-stamp" aria-hidden="true"><span>CREATIVE<br>VISION</span><b>CG.</b></div><span class="vertical-caption">L'IMAGE A QUELQUE CHOSE À RACONTER · 2026</span></div></section>
-<div class="marquee" role="group" aria-label="Domaines de création"><div class="shell">{categories}</div></div>
-<section class="section shell" aria-labelledby="work-title"><div class="section-heading"><div><p class="kicker">01 / Sélection</p><h2 id="work-title">Projets <em>choisis.</em></h2></div><a class="text-link dark" href="/projets.html">Tout voir <span aria-hidden="true">↗</span></a></div>
+<div class="marquee" role="group" aria-label="Domaines de création"><div class="marquee-track"><div class="marquee-set">{categories}</div><div class="marquee-set marquee-copy" aria-hidden="true">{categories}</div></div></div>
+<section class="glass-band" aria-label="Portfolio 2026, design graphique"><div class="glass-stage">
+<p class="glass-word">portfolio</p><p class="glass-meta"><span>2026</span><span>Design graphique</span></p>
+<span class="glass glass-pane" aria-hidden="true"></span><span class="glass glass-orb" aria-hidden="true"></span></div></section>
+<section class="section shell" aria-labelledby="work-title"><div class="section-heading" data-reveal><div><p class="kicker">01 / Sélection</p><h2 id="work-title">Projets <em>choisis.</em></h2></div><a class="text-link dark" href="/projets.html">Tout voir <span aria-hidden="true">↗</span></a></div>
 <div class="project-grid">{work}</div><a class="mobile-more" href="/projets.html">Voir tous les projets ↗</a></section>
-<section class="manifesto"><div class="shell manifesto-grid"><p class="kicker">02 / La démarche</p><div><p>Une belle image attire le regard.<br><em>Une intention claire</em> lui donne du sens.</p>
+<section class="manifesto"><div class="shell manifesto-grid" data-reveal><p class="kicker">02 / La démarche</p><div><p>Une belle image attire le regard.<br><em>Une intention claire</em> lui donne du sens.</p>
 <a class="button button-outline" href="/a-propos.html">Découvrir mon parcours ↗</a></div></div></section>
-<section class="section shell discipline"><p class="kicker">03 / Domaines</p><h2>Des idées au <em>rendu final.</em></h2>
+<section class="section shell discipline"><div data-reveal><p class="kicker">03 / Domaines</p><h2>Des idées au <em>rendu final.</em></h2></div>
 <div class="discipline-list"><a href="/projets.html#filtre=Identit%C3%A9">01 <strong>Identité &amp; branding</strong><span>↗</span></a><a href="/projets.html#filtre=%C3%89dition">02 <strong>Design graphique &amp; print</strong><span>↗</span></a><a href="/projets.html#filtre=Photographie">03 <strong>Photographie &amp; vidéo</strong><span>↗</span></a></div></section>'''
     return layout('Accueil', 'Clive Gouala : vidéo, design graphique, photographie. Découvrez une sélection de réalisations.', 'index.html', body)
 

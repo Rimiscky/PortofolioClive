@@ -129,5 +129,44 @@
       }
     });
   }
+  const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  const revealed = [...document.querySelectorAll('[data-reveal], .glass-band')];
+  if (motionOk && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }), { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    revealed.forEach(item => observer.observe(item));
+  } else {
+    revealed.forEach(item => item.classList.add('is-visible'));
+  }
+
+  // Verre dépoli : les formes suivent légèrement le pointeur et glissent avec le défilement.
+  const glass = document.querySelector('.glass-band');
+  if (glass && motionOk) {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const box = glass.getBoundingClientRect();
+      const progress = 1 - (box.top + box.height) / (window.innerHeight + box.height);
+      glass.style.setProperty('--p', Math.min(1, Math.max(0, progress)).toFixed(3));
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+    if (window.matchMedia('(pointer: fine)').matches) {
+      glass.addEventListener('pointermove', event => {
+        const box = glass.getBoundingClientRect();
+        glass.style.setProperty('--mx', ((event.clientX - box.left) / box.width - 0.5).toFixed(3));
+        glass.style.setProperty('--my', ((event.clientY - box.top) / box.height - 0.5).toFixed(3));
+      });
+      glass.addEventListener('pointerleave', () => {
+        glass.style.setProperty('--mx', '0');
+        glass.style.setProperty('--my', '0');
+      });
+    }
+  }
   document.documentElement.classList.add('js-ready');
 })();

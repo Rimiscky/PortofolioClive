@@ -90,6 +90,23 @@ class InteractionTests(unittest.TestCase):
         self.assertIn(duration, ('1e-05s', '0.00001s', '0.01ms', '0s'))
         reduced.close()
 
+    def test_sections_reveal_on_scroll_and_stay_visible_with_reduced_motion(self):
+        page = self.browser.new_page(viewport={'width': 1440, 'height': 900})
+        page.goto(self.base + '/index.html')
+        card = page.locator('.project-grid [data-reveal]').last
+        self.assertEqual(card.evaluate('el => getComputedStyle(el).opacity'), '0')
+        card.scroll_into_view_if_needed()
+        page.wait_for_function("el => getComputedStyle(el).opacity === '1'", arg=card.element_handle())
+        self.assertIn('glass', page.locator('.glass-orb').get_attribute('class'))
+        self.assertEqual(page.locator('.marquee-copy').get_attribute('aria-hidden'), 'true')
+        page.close()
+        reduced = self.browser.new_page(viewport={'width': 1440, 'height': 900}, reduced_motion='reduce')
+        reduced.goto(self.base + '/index.html')
+        opacity = reduced.locator('.project-grid [data-reveal]').last.evaluate('el => getComputedStyle(el).opacity')
+        self.assertEqual(opacity, '1')
+        self.assertEqual(reduced.locator('.marquee-copy').evaluate('el => getComputedStyle(el).display'), 'none')
+        reduced.close()
+
     def test_case_study_images_can_be_opened_full_size(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/projets/les-delices-de-md.html')

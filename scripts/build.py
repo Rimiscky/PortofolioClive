@@ -25,7 +25,8 @@ PROJECTS = [
          scope="Identité, charte, communication"),
     dict(slug="les-delices-de-md", title="Les Délices de MD", category="Packaging", cover=25,
          images=[14, 15, 23, 24, 25], intro="Une marque gourmande déclinée en identité, bouteilles et packagings fruités.",
-         scope="Branding, packaging, étiquettes"),
+         scope="Branding, packaging, étiquettes",
+         ribbon=dict(text="les Délices de MD", bg="#7d68cc", tape="#f0a21a")),
     dict(slug="mascotte-btp", title="Mascotte BTP", category="Identité", cover=17,
          images=[17], intro="Du croquis au personnage final : un poulpe ouvrier conçu autour de la polyvalence.",
          scope="Recherche, illustration, mascotte"),
@@ -109,13 +110,14 @@ def card(p: dict, index: int, featured=False) -> str:
 def home() -> str:
     work = ''.join(card(p, i + 1, i == 0) for i, p in enumerate(PROJECTS[:6]))
     categories = ''.join(f'<span>{e(c)}</span>' for c in CATEGORIES[1:])
-    body = f'''<section class="hero shell"><div class="hero-copy"><p class="eyebrow"><span class="eyebrow-dot"></span>Portfolio créatif / 2026</p>
-<h1 class="hero-title"><span class="line"><span>Des idées.</span></span> <span class="line"><span>Des images.</span></span> <span class="line"><span><em>De l'impact.</em></span></span></h1>
-<p class="hero-intro">Je suis Clive Gouala. Je donne forme aux identités, aux images et aux histoires qui méritent d'être vues.</p>
+    streaks = '<span></span>' * 6
+    body = f'''<section class="hero cover"><div class="cover-streaks" aria-hidden="true">{streaks}</div><div class="shell cover-inner">
+<h1 class="hero-title"><span class="line"><span>Portfolio</span></span><span class="cover-year">2026</span><span class="sr-only"> de Clive Gouala</span></h1>
+<p class="cover-sub" lang="en"><strong>here</strong> <em>is my</em> <strong>creative process</strong></p>
+<p class="hero-intro">Je donne forme aux identités, aux images et aux histoires qui méritent d'être vues.</p>
 <div class="hero-actions"><a class="button button-primary" href="/projets.html">Explorer mon travail <span aria-hidden="true">↗</span></a><a class="text-link" href="/a-propos.html">Faire connaissance <span aria-hidden="true">↗</span></a></div>
-<div class="hero-bottom"><span>Réalisateur vidéo<br>Designer graphique<br>Photographe</span><span>Défiler pour explorer ↓</span></div></div>
-<div class="hero-visual"><div class="hero-photo"><img src="/assets/media/hero-photo.webp" width="593" height="950" alt="Photographie éditoriale de la série plage figurant dans le portfolio de Clive Gouala" fetchpriority="high"></div>
-<div class="hero-stamp" aria-hidden="true"><span>CREATIVE<br>VISION</span><b>CG.</b></div><span class="vertical-caption">L'IMAGE A QUELQUE CHOSE À RACONTER · 2026</span></div></section>
+<div class="cover-bottom"><div><p class="pill">Clive GOUALA</p><ul><li>Réalisateur vidéo</li><li>Designer graphique</li><li>Photographe</li></ul></div>
+<ul><li>Logo</li><li>Packaging</li><li>Branding</li></ul><ul><li>Social media</li><li>Print ready designs</li><li>Clip vidéo</li></ul></div></div></section>
 <div class="marquee" role="group" aria-label="Domaines de création"><div class="marquee-track"><div class="marquee-set">{categories}</div><div class="marquee-set marquee-copy" aria-hidden="true">{categories}</div></div></div>
 <section class="glass-band" aria-label="Portfolio 2026, design graphique"><div class="glass-stage">
 <p class="glass-word">portfolio</p><p class="glass-meta"><span>2026</span><span>Design graphique</span></p>
@@ -139,27 +141,50 @@ def projects_page() -> str:
     return layout('Projets', 'Parcourez les réalisations de Clive Gouala : logos, identité, packaging, photographie et édition.', 'projets.html', body)
 
 
+def ribbons(p: dict) -> str:
+    """Rubans diagonaux décoratifs repris de l'identité du projet (purement visuels)."""
+    if 'ribbon' not in p:
+        return ''
+    r = p['ribbon']
+    tape = ''.join(f'<span>{e(r["text"])}</span>' for _ in range(8))
+    rows = ''.join(f'<div class="ribbon ribbon-{i}"><div class="ribbon-track">{tape}{tape}</div></div>' for i in range(1, 4))
+    return (f'<div class="ribbons shell" aria-hidden="true" style="--ribbon-bg:{r["bg"]};--ribbon-tape:{r["tape"]}">'
+            f'<p class="ribbons-name">{e(r["text"])}</p>{rows}</div>')
+
+
 def project_page(p: dict, index: int) -> str:
     prev = PROJECTS[(index - 1) % len(PROJECTS)]
     nxt = PROJECTS[(index + 1) % len(PROJECTS)]
     images = ''.join(f'<figure class="case-figure"><a href="/assets/media/folio-{n:02d}.webp" target="_blank" rel="noopener" aria-label="Agrandir la planche {i + 1} de {e(p["title"])}">{picture(n, f"Planche {i + 1} du projet {p["title"]}")}</a><figcaption>Planche {i + 1:02d} / {e(p["title"])} · ouvrir en grand</figcaption></figure>' for i, n in enumerate(p['images']))
     body = f'''<div class="case-head shell"><a class="back-link" href="/projets.html">← Tous les projets</a><p class="kicker">{e(p['category'])} / Projet {index + 1:02d}</p>
 <h1>{e(p['title'])}<span class="orange-dot">.</span></h1><div class="case-details"><p>{e(p['intro'])}</p><dl><div><dt>Discipline</dt><dd>{e(p['category'])}</dd></div><div><dt>Présenté dans le book</dt><dd>{e(p['scope'])}</dd></div></dl></div></div>
-<div class="case-media shell">{images}</div><nav class="case-pagination shell" aria-label="Projets adjacents"><a href="/projets/{e(prev['slug'])}.html"><small>← Projet précédent</small><strong>{e(prev['title'])}</strong></a><a href="/projets/{e(nxt['slug'])}.html"><small>Projet suivant →</small><strong>{e(nxt['title'])}</strong></a></nav>'''
+{ribbons(p)}<div class="case-media shell">{images}</div><nav class="case-pagination shell" aria-label="Projets adjacents"><a href="/projets/{e(prev['slug'])}.html"><small>← Projet précédent</small><strong>{e(prev['title'])}</strong></a><a href="/projets/{e(nxt['slug'])}.html"><small>Projet suivant →</small><strong>{e(nxt['title'])}</strong></a></nav>'''
     return layout(p['title'], p['intro'], 'projets.html', body)
 
 
+SKILLS = [("Ai", "Adobe Illustrator", 85), ("Pr", "Premiere Pro", 85), ("Ps", "Photoshop", 85),
+          ("Id", "InDesign", 70), ("Ae", "After Effects", 55), ("Dr", "DaVinci Resolve", 85),
+          ("Bl", "Blender", 30)]
+
+
 def about() -> str:
-    body = '''<section class="page-intro shell about-intro"><p class="kicker">À propos / Le créateur derrière les images</p>
-<h1>Curieux de nature.<br><em>Créatif par choix.</em></h1></section>
-<section class="about-main shell"><div class="about-portrait"><img src="/assets/media/clive-portrait.webp" width="480" height="900" alt="Portrait en noir et blanc de Clive Gouala" loading="eager"><span>Clive Gouala / Créateur visuel</span></div>
-<div class="about-copy"><p class="kicker">La personne & la pratique</p><h2>Bonjour, moi<br>c'est <em>Clive.</em></h2>
-<p>Réalisateur vidéo, designer graphique et photographe, je travaille à la rencontre de l'image, de la marque et du récit.</p>
-<p>Dans mon book, chaque projet raconte une approche : observer, expérimenter, puis trouver une forme qui sert vraiment l'idée.</p>
-<p>Mes inspirations viennent aussi de l'architecture, de la mode et de la décoration. Elles nourrissent une pratique qui passe du logo à la photographie, des supports imprimés aux contenus digitaux.</p>
+    skills = ''.join(
+        f'<li class="skill"><span class="skill-badge" aria-hidden="true">{e(code)}</span><span class="skill-name">{e(name)}</span>'
+        f'<span class="skill-bar" role="meter" aria-label="Maîtrise de {e(name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{level}">'
+        f'<span style="--level:{level}%"></span></span></li>' for code, name, level in SKILLS)
+    body = f'''<section class="page-intro shell about-intro"><p class="kicker">À propos / Le créateur derrière les images</p>
+<h1 class="about-name">Clive<br>Goual<span>a</span></h1><p class="about-roles">Réalisateur vidéo <span aria-hidden="true">|</span> Designer graphique <span aria-hidden="true">|</span> Photographe</p></section>
+<section class="about-main shell"><div class="about-portrait" data-reveal><img src="/assets/media/clive-portrait.webp" width="480" height="900" alt="Portrait en noir et blanc de Clive Gouala" loading="eager"><span>Clive Gouala / Créateur visuel</span></div>
+<div class="about-copy" data-reveal><p class="kicker">À propos de moi</p><h2>Bonjour, moi<br>c'est <em>Clive.</em></h2>
+<p>Créatif passionné avec 8 ans d'expérience, spécialisé en design graphique, branding, contenus digitaux, audiovisuel et photographie, avec une forte sensibilité artistique et des inspirations issues de l'architecture, de la mode et de la décoration.</p>
+<p>Pour mon portfolio et mon webfolio, j'ai choisi un ensemble épuré afin de mettre en valeur mes créations, dans une ambiance lumineuse et naturelle qui correspond à mon univers créatif et à ma sensibilité artistique.</p>
+<h3>Formation</h3>
+<p>Formation complète en infographie, photographie et vidéographie, spécialisée dans la maîtrise de Photoshop, Illustrator, InDesign, Premiere Pro, DaVinci Resolve et After Effects. Certificat de fin de formation obtenu.</p>
+<p class="about-school">2017–2018 : études secondaires, 2<sup>d</sup> cycle · Baccalauréat série D</p>
 <a class="button button-primary" href="/contact.html">Discutons de votre projet ↗</a></div></section>
-<section class="section shell about-skills"><p class="kicker">Outils & savoir-faire</p><h2>Une pratique <em>transversale.</em></h2>
-<div class="skills-columns"><div><h3>Ce que je crée</h3><ul><li>Identités de marque & logotypes</li><li>Supports imprimés & packaging</li><li>Contenus pour les réseaux sociaux</li><li>Photographie & réalisation vidéo</li></ul></div><div><h3>Outils présents dans mon book</h3><ul><li>Photoshop · Illustrator · InDesign</li><li>Premiere Pro · DaVinci Resolve</li><li>After Effects · Blender</li></ul></div></div></section>'''
+<section class="section shell about-skills"><div data-reveal><p class="kicker">Skills</p><h2>Une pratique <em>transversale.</em></h2></div>
+<div class="skills-columns"><div data-reveal><h3>Logiciels</h3><ul class="skill-list">{skills}</ul></div><div data-reveal><h3>Ce que je crée</h3><ul><li>Identités de marque & logotypes</li><li>Supports imprimés & packaging</li><li>Contenus pour les réseaux sociaux</li><li>Photographie, réalisation & clips vidéo</li></ul>
+<p class="about-outro">Je vous laisse à présent découvrir mon travail… <a href="/projets.html">Voir les projets ↗</a></p></div></div></section>'''
     return layout('À propos', 'Rencontrez Clive Gouala, réalisateur vidéo, designer graphique et photographe.', 'a-propos.html', body)
 
 

@@ -58,12 +58,13 @@ class InteractionTests(unittest.TestCase):
         self.assertEqual(menu.get_attribute('aria-expanded'), 'false')
         page.close()
 
-    def test_mobile_hero_image_starts_within_first_screen(self):
+    def test_mobile_cover_shows_title_and_call_to_action_in_first_screen(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/index.html')
-        box = page.locator('.hero-photo').bounding_box()
+        self.assertIn('Portfolio', page.locator('h1').inner_text())
+        box = page.get_by_role('link', name='Explorer mon travail').bounding_box()
         self.assertIsNotNone(box)
-        self.assertLess(box['y'] if box else 9999, 650)
+        self.assertLess(box['y'] + box['height'] if box else 9999, 812)
         page.close()
 
     def test_photo_hover_has_a_single_light_sweep_without_affecting_links(self):
@@ -82,11 +83,11 @@ class InteractionTests(unittest.TestCase):
     def test_hero_entrance_respects_reduced_motion(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/index.html')
-        self.assertNotEqual(page.locator('.hero-photo img').evaluate('el => getComputedStyle(el).animationName'), 'none')
+        self.assertNotEqual(page.locator('.hero-title .line > span').evaluate('el => getComputedStyle(el).animationName'), 'none')
         page.close()
         reduced = self.browser.new_page(viewport={'width': 375, 'height': 812}, reduced_motion='reduce')
         reduced.goto(self.base + '/index.html')
-        duration = reduced.locator('.hero-photo img').evaluate('el => getComputedStyle(el).animationDuration')
+        duration = reduced.locator('.hero-title .line > span').evaluate('el => getComputedStyle(el).animationDuration')
         self.assertIn(duration, ('1e-05s', '0.00001s', '0.01ms', '0s'))
         reduced.close()
 
@@ -106,6 +107,28 @@ class InteractionTests(unittest.TestCase):
         self.assertEqual(opacity, '1')
         self.assertEqual(reduced.locator('.marquee-copy').evaluate('el => getComputedStyle(el).display'), 'none')
         reduced.close()
+
+    def test_about_skill_meters_fill_when_revealed(self):
+        page = self.browser.new_page(viewport={'width': 1280, 'height': 800})
+        page.goto(self.base + '/a-propos.html')
+        meters = page.get_by_role('meter')
+        self.assertEqual(meters.count(), 7)
+        self.assertEqual(page.get_by_role('meter', name='Maîtrise de Photoshop').get_attribute('aria-valuenow'), '85')
+        fill = page.locator('.skill-bar span').first
+        self.assertEqual(fill.evaluate('el => el.getBoundingClientRect().width'), 0)
+        fill.scroll_into_view_if_needed()
+        page.wait_for_function('el => el.getBoundingClientRect().width > el.parentElement.getBoundingClientRect().width * 0.8',
+                               arg=fill.element_handle())
+        page.close()
+
+    def test_brand_ribbons_are_decorative(self):
+        page = self.browser.new_page(viewport={'width': 1280, 'height': 800})
+        page.goto(self.base + '/projets/les-delices-de-md.html')
+        self.assertEqual(page.locator('.ribbons').get_attribute('aria-hidden'), 'true')
+        self.assertEqual(page.locator('.ribbon').count(), 3)
+        page.goto(self.base + '/projets/so-sweet.html')
+        self.assertEqual(page.locator('.ribbons').count(), 0)
+        page.close()
 
     def test_case_study_images_can_be_opened_full_size(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})

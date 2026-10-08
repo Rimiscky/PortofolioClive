@@ -56,6 +56,15 @@ class PortfolioSiteTests(unittest.TestCase):
                 for link in p.links:
                     self.assertTrue((out / link.lstrip('/').split('#')[0]).exists(), f'{html}: {link}')
 
+    def test_no_symbols_rendered_as_emoji_on_mobile(self):
+        # ↗ et ✳ ont une présentation emoji sur iOS/Android : on utilise des SVG à la place.
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp); build_site(out)
+            for path in [*out.rglob('*.html'), out / 'assets' / 'app.js', out / 'assets' / 'style.css']:
+                text = path.read_text(encoding='utf-8')
+                for symbol in '↗↘↙↖↔↕✳✴❇✔✖➡⬅⬆⬇':
+                    self.assertNotIn(symbol, text, f'{path.name} contient {symbol}')
+
 
 if __name__ == '__main__':
     unittest.main()

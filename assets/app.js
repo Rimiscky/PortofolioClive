@@ -69,7 +69,7 @@
       <div class="photo-stage">
         <div class="photo-toolbar">
           <span class="photo-count"></span>
-          <a class="photo-original" href="#" target="_blank" rel="noopener" aria-label="Ouvrir l'image originale pour zoomer">Zoom HD ↗</a>
+          <a class="photo-original" href="#" target="_blank" rel="noopener" aria-label="Ouvrir l'image originale pour zoomer">Zoom HD <svg class="icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/></svg></a>
           <button type="button" class="photo-close" aria-label="Fermer la photo">Fermer ×</button>
         </div>
         <span class="photo-announcement sr-only" aria-live="polite" aria-atomic="true"></span>

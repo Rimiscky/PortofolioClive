@@ -16,6 +16,6 @@
   .js-ready .nav{display:none;position:absolute;box-shadow:0 18px 32px #0004}
   .js-ready .nav.open{display:flex}
 }
-@media(max-width:699px){.hero-copy{padding-top:42px}.hero h1{margin:25px 0 19px}.hero-actions{margin:22px 0 26px}.hero-bottom{display:none}.hero{padding-bottom:36px}}
+@media(max-width:699px){.filters{flex-wrap:wrap;overflow-x:visible}.hero-copy{padding-top:42px}.hero h1{margin:25px 0 19px}.hero-actions{margin:22px 0 26px}.hero-bottom{display:none}.hero{padding-bottom:36px}}
 @media(max-width:420px){.hero h1{font-size:clamp(3.25rem,15vw,4.5rem)}.hero-visual{height:355px}.hero-stamp{height:105px;width:105px;right:0;bottom:10px}.hero-stamp b{font-size:2rem}.project-meta span:last-child{display:none}.case-pagination{gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

@@ -38,6 +38,13 @@ class InteractionTests(unittest.TestCase):
         self.assertTrue(nav.get_by_role('link', name='Projets').is_visible())
         page.close()
 
+    def test_all_filters_wrap_on_mobile(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812})
+        page.goto(self.base + '/projets.html')
+        data = page.locator('.filters').evaluate('(el) => [el.scrollWidth, el.clientWidth]')
+        self.assertLessEqual(data[0], data[1] + 1)
+        page.close()
+
     def test_mobile_menu_opens_and_closes_with_escape(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/index.html')

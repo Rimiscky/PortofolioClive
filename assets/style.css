@@ -34,3 +34,23 @@
   .case-figure img{transition:transform .45s ease}
   .case-figure a:hover img,.case-figure a:focus-visible img{transform:scale(1.012)}
 }
+
+/* Visionneuse : le lien vers le fichier original reste actif sans JavaScript. */
+.photo-dialog{border:0;padding:0;width:min(94vw,1160px);max-width:none;max-height:94dvh;background:#191917;color:var(--paper);box-shadow:0 24px 75px #0009;overflow:hidden}
+.photo-dialog::backdrop{background:rgba(7,7,7,.88)}
+.photo-stage{padding:clamp(12px,2vw,25px);display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;max-height:94dvh}
+.photo-toolbar,.photo-controls{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.photo-toolbar{font-size:.75rem;letter-spacing:.1em;font-weight:800}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.photo-original{display:inline-flex;align-items:center;min-height:44px;padding:6px 8px;border-bottom:1px solid var(--orange);white-space:nowrap}
+.photo-original:hover{color:var(--orange)}
+.photo-dialog button{min-width:44px;min-height:44px;background:transparent;border:1px solid #716e66;color:var(--paper);cursor:pointer}
+.photo-dialog button:not(:disabled):hover{border-color:var(--orange);color:var(--orange)}
+.photo-dialog button:disabled{opacity:.35;cursor:not-allowed}
+.photo-close{padding:8px 14px}
+.photo-full{width:100%;height:auto;max-height:calc(94dvh - 155px);object-fit:contain;margin:auto}
+.photo-caption{font-size:.875rem;line-height:1.45;text-align:center;margin:0;max-width:700px}
+@media(prefers-reduced-motion:no-preference){
+  @keyframes photo-dialog-in{from{opacity:.7;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+  .photo-dialog[open] .photo-stage{animation:photo-dialog-in .36s ease-out both}
+}

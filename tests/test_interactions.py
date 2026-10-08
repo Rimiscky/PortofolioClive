@@ -66,6 +66,30 @@ class InteractionTests(unittest.TestCase):
         self.assertLess(box['y'] if box else 9999, 650)
         page.close()
 
+    def test_photo_hover_has_a_single_light_sweep_without_affecting_links(self):
+        page = self.browser.new_page(viewport={'width': 1280, 'height': 800})
+        page.goto(self.base + '/projets.html')
+        card = page.locator('.project-link').first
+        photo = card.locator('.project-image')
+        before = photo.evaluate("el => getComputedStyle(el, '::after').transform")
+        card.hover()
+        page.wait_for_timeout(850)
+        after = photo.evaluate("el => getComputedStyle(el, '::after').transform")
+        self.assertNotEqual(before, after)
+        self.assertTrue((card.get_attribute('href') or '').endswith('.html'))
+        page.close()
+
+    def test_hero_entrance_respects_reduced_motion(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812})
+        page.goto(self.base + '/index.html')
+        self.assertNotEqual(page.locator('.hero-photo img').evaluate('el => getComputedStyle(el).animationName'), 'none')
+        page.close()
+        reduced = self.browser.new_page(viewport={'width': 375, 'height': 812}, reduced_motion='reduce')
+        reduced.goto(self.base + '/index.html')
+        duration = reduced.locator('.hero-photo img').evaluate('el => getComputedStyle(el).animationDuration')
+        self.assertIn(duration, ('1e-05s', '0.00001s', '0.01ms', '0s'))
+        reduced.close()
+
     def test_case_study_images_can_be_opened_full_size(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/projets/les-delices-de-md.html')

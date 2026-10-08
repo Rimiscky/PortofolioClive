@@ -18,7 +18,13 @@ python3 scripts/build.py
 python3 -m http.server 8000 --directory dist
 ```
 
-Puis ouvrir `http://localhost:8000`. Le domaine cible communiqué est **`clive.rimiscky.fr` (Hostinger)**, mais sa configuration et le déploiement restent à faire ultérieurement, avec autorisation distincte. L'hébergement statique doit servir **le contenu de `dist/` à la racine du sous-domaine** (les liens et médias sont absolus depuis `/`). Aucun workflow ne publie automatiquement le site.
+Puis ouvrir `http://localhost:8000`.
+
+## Déploiement Hostinger (`clive.rimiscky.fr`)
+
+Hostinger copie la branche Git **telle quelle** dans `public_html`, sans étape de build. Les branches de code (`main`, `feat/…`) n'ont pas de `index.html` à la racine : les déployer directement donne une erreur **403 Forbidden**.
+
+Le workflow `.github/workflows/hostinger.yml` construit le site à chaque push sur `main` (ou à la demande depuis l'onglet Actions) et publie le contenu de `dist/` sur la branche **`hostinger`**. Dans hPanel → Déploiements, sélectionner la branche `hostinger` puis « Redéployer ». Les liens et médias sont absolus depuis `/` : le site doit être servi à la racine du sous-domaine.
 
 ## Tests
 

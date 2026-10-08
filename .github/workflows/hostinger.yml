@@ -1,0 +1,33 @@
+name: Préparer la branche Hostinger
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hostinger
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Tests statiques
+        run: python -m unittest tests.test_site -v
+      - name: Construire le site
+        run: |
+          python scripts/build.py
+          test -f dist/index.html
+          test -f dist/.htaccess
+      - name: Publier dist/ sur la branche hostinger
+        run: |
+          cd dist
+          git init -q -b hostinger
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898283+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Site construit depuis ${GITHUB_SHA::7}"
+          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" hostinger

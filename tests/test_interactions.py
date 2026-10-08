@@ -66,11 +66,100 @@ class InteractionTests(unittest.TestCase):
         self.assertLess(box['y'] if box else 9999, 650)
         page.close()
 
+    def test_photo_hover_has_a_single_light_sweep_without_affecting_links(self):
+        page = self.browser.new_page(viewport={'width': 1280, 'height': 800})
+        page.goto(self.base + '/projets.html')
+        card = page.locator('.project-link').first
+        photo = card.locator('.project-image')
+        before = photo.evaluate("el => getComputedStyle(el, '::after').transform")
+        card.hover()
+        page.wait_for_timeout(850)
+        after = photo.evaluate("el => getComputedStyle(el, '::after').transform")
+        self.assertNotEqual(before, after)
+        self.assertTrue((card.get_attribute('href') or '').endswith('.html'))
+        page.close()
+
+    def test_hero_entrance_respects_reduced_motion(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812})
+        page.goto(self.base + '/index.html')
+        self.assertNotEqual(page.locator('.hero-photo img').evaluate('el => getComputedStyle(el).animationName'), 'none')
+        page.close()
+        reduced = self.browser.new_page(viewport={'width': 375, 'height': 812}, reduced_motion='reduce')
+        reduced.goto(self.base + '/index.html')
+        duration = reduced.locator('.hero-photo img').evaluate('el => getComputedStyle(el).animationDuration')
+        self.assertIn(duration, ('1e-05s', '0.00001s', '0.01ms', '0s'))
+        reduced.close()
+
     def test_case_study_images_can_be_opened_full_size(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/projets/les-delices-de-md.html')
         image = page.locator('.case-figure img').first
         self.assertTrue(image.locator('xpath=..').evaluate('(a) => a.tagName === "A" && a.href === a.firstElementChild.src'))
+        page.close()
+
+    def test_case_photo_link_still_works_without_javascript(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812}, java_script_enabled=False)
+        page.goto(self.base + '/projets/les-delices-de-md.html')
+        link = page.locator('.case-figure a').first
+        href = link.get_attribute('href') or ''
+        self.assertTrue(href.endswith('.webp'))
+        with page.expect_popup() as popup:
+            link.click()
+        self.assertTrue(popup.value.url.endswith(href))
+        popup.value.close()
+        page.close()
+
+    def test_case_photo_lightbox_has_keyboard_navigation_and_restores_focus(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812})
+        page.goto(self.base + '/projets/les-delices-de-md.html')
+        first = page.locator('.case-figure a').first
+        first_alt = first.locator('img').get_attribute('alt')
+        first.click()
+        dialog = page.get_by_role('dialog', name='Visionneuse des visuels')
+        self.assertTrue(dialog.is_visible())
+        self.assertEqual(dialog.locator('img').get_attribute('alt'), first_alt)
+        original = dialog.get_by_role('link', name="Ouvrir l'image originale pour zoomer")
+        self.assertEqual(original.evaluate('(a) => new URL(a.href).pathname'), first.get_attribute('href'))
+        with page.expect_popup() as popup:
+            original.click()
+        self.assertTrue(popup.value.url.endswith('.webp'))
+        popup.value.close()
+        self.assertEqual(dialog.locator('.photo-count').text_content(), f'1 / {page.locator(".case-figure a").count()}')
+        page.keyboard.press('ArrowRight')
+        self.assertEqual(dialog.locator('.photo-count').text_content(), f'2 / {page.locator(".case-figure a").count()}')
+        self.assertIn('2 sur', dialog.locator('[aria-live="polite"].photo-announcement').text_content() or '')
+        page.keyboard.press('Escape')
+        self.assertFalse(dialog.is_visible())
+        self.assertTrue(first.evaluate('el => document.activeElement === el'))
+        page.close()
+
+    def test_lightbox_respects_reduced_motion_and_mobile_width(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812}, reduced_motion='reduce')
+        page.goto(self.base + '/projets/les-delices-de-md.html')
+        page.locator('.case-figure a').first.click()
+        stage = page.locator('.photo-dialog .photo-stage')
+        self.assertTrue(stage.is_visible())
+        duration = stage.evaluate('el => getComputedStyle(el).animationDuration')
+        self.assertIn(duration, ('1e-05s', '0.00001s', '0.01ms', '0s'))
+        width = page.evaluate('document.documentElement.scrollWidth')
+        self.assertLessEqual(width, 375)
+        page.get_by_role('button', name='Fermer la photo').click()
+        self.assertFalse(page.locator('.photo-dialog').is_visible())
+        page.close()
+
+    def test_lightbox_controls_fit_a_short_touchscreen(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 568}, is_mobile=True, has_touch=True)
+        page.goto(self.base + '/projets/les-delices-de-md.html')
+        page.locator('.case-figure a').first.click()
+        page.wait_for_timeout(420)
+        for control in page.locator('.photo-dialog button, .photo-original').all():
+            box = control.bounding_box()
+            if box is None:
+                self.fail('Commande de la visionneuse non visible')
+            self.assertGreaterEqual(box['width'], 44)
+            self.assertGreaterEqual(box['height'], 44)
+            self.assertLessEqual(box['y'] + box['height'], 568)
+        self.assertEqual(page.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth'), 0)
         page.close()
 
     def test_filter_reduces_cards_and_announces_count(self):

@@ -1,7 +1,7 @@
 name: Vérifier le portfolio
 on:
   push:
-    branches: [feat/portfolio-clive]
+    branches: [main, feat/portfolio-clive]
   pull_request:
     branches: [main]
 permissions:
@@ -25,3 +25,4 @@ jobs:
           python scripts/build.py
           test -f dist/index.html
           test -f dist/projets/les-delices-de-md.html
+          test -f dist/404.html

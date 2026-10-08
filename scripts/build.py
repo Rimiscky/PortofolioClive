@@ -189,10 +189,13 @@ def build_site(destination: Path) -> None:
     for index, project in enumerate(PROJECTS):
         (project_dir / f"{project['slug']}.html").write_text(project_page(project, index), encoding='utf-8')
     # Hostinger (LiteSpeed/Apache) : servir index.html à la racine plutôt qu'un 403.
-    (destination / '.htaccess').write_text('DirectoryIndex index.html\nOptions -Indexes\n', encoding='utf-8')
+    (destination / '.htaccess').write_text('DirectoryIndex index.html\nOptions -Indexes\nErrorDocument 404 /404.html\n', encoding='utf-8')
 
 
 if __name__ == '__main__':
     shutil.rmtree(ROOT / 'dist', ignore_errors=True)  # évite de publier des pages obsolètes
     build_site(ROOT / 'dist')
-    print('Site prêt dans dist/')
+    files = sorted(f for f in (ROOT / 'dist').rglob('*') if f.is_file())
+    for f in files:
+        print(f"  {f.relative_to(ROOT / 'dist')}  ({f.stat().st_size // 1024} Ko)")
+    print(f'Site prêt dans dist/ : {len(files)} fichiers')

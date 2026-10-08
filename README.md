@@ -26,6 +26,8 @@ Hostinger copie la branche Git **telle quelle** dans `public_html`, sans étape 
 
 Le workflow `.github/workflows/hostinger.yml` construit le site à chaque push sur `main` (ou à la demande depuis l'onglet Actions) et publie le contenu de `dist/` sur la branche **`hostinger`**. Dans hPanel → Déploiements, sélectionner la branche `hostinger` puis « Redéployer ». Les liens et médias sont absolus depuis `/` : le site doit être servi à la racine du sous-domaine.
 
+Pour vérifier ce qui est en ligne : ouvrir `https://clive.rimiscky.fr/build-info.txt` (commit source, date de build, lien vers le run Actions et liste des fichiers). Le même journal apparaît dans le résumé de chaque run « Préparer la branche Hostinger » sur GitHub.
+
 ## Tests
 
 ```sh

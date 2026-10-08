@@ -195,4 +195,7 @@ def build_site(destination: Path) -> None:
 if __name__ == '__main__':
     shutil.rmtree(ROOT / 'dist', ignore_errors=True)  # évite de publier des pages obsolètes
     build_site(ROOT / 'dist')
-    print('Site prêt dans dist/')
+    files = sorted(f for f in (ROOT / 'dist').rglob('*') if f.is_file())
+    for f in files:
+        print(f"  {f.relative_to(ROOT / 'dist')}  ({f.stat().st_size // 1024} Ko)")
+    print(f'Site prêt dans dist/ : {len(files)} fichiers')

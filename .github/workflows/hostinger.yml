@@ -23,6 +23,20 @@ jobs:
           python scripts/build.py
           test -f dist/index.html
           test -f dist/.htaccess
+      - name: Journal de build
+        run: |
+          # Consultable en ligne sur /build-info.txt pour vérifier ce que Hostinger sert.
+          {
+            echo "Commit source : ${GITHUB_SHA}"
+            echo "Branche       : ${GITHUB_REF_NAME}"
+            echo "Construit le  : $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            echo "Run Actions   : ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo
+            echo "Fichiers :"
+            (cd dist && find . -type f ! -name build-info.txt | sort)
+          } > dist/build-info.txt
+          cat dist/build-info.txt
+          { echo '## Site construit pour Hostinger'; echo '```'; cat dist/build-info.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Publier dist/ sur la branche hostinger
         run: |
           cd dist

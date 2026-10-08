@@ -1,6 +1,6 @@
 # Portfolio web · Clive Gouala
 
-Site éditorial statique et mobile-first basé sur le book PDF remis pour le projet. **Version de travail non déployée** : les droits de diffusion des visuels et les contenus doivent encore être confirmés avec Clive.
+Site éditorial statique et mobile-first basé sur le book PDF remis pour le projet. **Version de travail non déployée** : Rimiscky confirme l'accord de Clive pour présenter son portfolio personnel en ligne ; les éventuels droits de tiers et les coordonnées publiques restent à vérifier.
 
 ## Parcours
 
@@ -30,8 +30,8 @@ Les tests d'interaction nécessitent `playwright` et Chromium (`python3 -m pip i
 
 ## Contenu et validation avant publication
 
-- Les 23 images WebP sont des extraits/recadrages optimisés du PDF « 2026 Portofolio CLG 2.pdf » transmis pour ce projet. Le PDF original, volumineux, n'est **pas** commité. Certaines planches contiennent des photographies et mockups dont les droits de diffusion en ligne sont à confirmer avec Clive avant déploiement.
+- Les 23 images WebP sont des extraits/recadrages optimisés du PDF « 2026 Portofolio CLG 2.pdf » transmis pour ce projet. Le PDF original, volumineux, n'est **pas** commité. Clive est d'accord pour présenter son portfolio personnel en ligne, selon la confirmation transmise par Rimiscky. Cet accord ne démontre pas à lui seul les éventuelles licences de photographies ou mockups créés par des tiers : en vérifier la provenance si de tels éléments figurent dans les planches.
 - Les légendes synthétisent ce qui est visible dans les planches. Aucun chiffre d'audience, résultat commercial, témoignage ni date d'exécution n'est inventé.
 - Vérifier avec Clive l'orthographe des marques, sa biographie et l'adresse de contact `sigmosart@gmail.com`. Les liens sociaux ne sont pas affichés faute d'URL confirmée ; aucun téléphone n'est repris.
-- Toutes les pages contiennent `noindex, nofollow` tant que contenu et droits des visuels ne sont pas approuvés. `noindex` ne protège pas l'accès aux fichiers du dépôt public : obtenir les autorisations nécessaires avant toute diffusion supplémentaire ou déploiement. Retirer la consigne d'indexation uniquement lors d'une publication autorisée.
+- Toutes les pages contiennent `noindex, nofollow` jusqu'à la validation éditoriale et à une publication autorisée. `noindex` ne protège pas l'accès aux fichiers du dépôt public : vérifier la provenance des éventuels visuels de tiers avant le déploiement. Retirer la consigne d'indexation uniquement lors d'une publication autorisée.
 - Pas de collecte, cookie, police distante, service tiers ni analytics. Le texte et les images restent sous la responsabilité de leurs ayants droit ; le code du site n'attribue pas de licence aux médias.

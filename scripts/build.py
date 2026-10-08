@@ -79,11 +79,16 @@ def picture(number: int, alt: str, *, loading="lazy", class_name="") -> str:
             f'alt="{e(alt)}" loading="{loading}" width="1600" height="900">')
 
 
+# Icône flèche en SVG : le caractère ↗ s'affiche en emoji couleur sur iOS/Android.
+ARROW = ('<svg class="icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">'
+         '<path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"/></svg>')
+
+
 def layout(title: str, description: str, active: str, body: str) -> str:
     nav = "".join(f'<a href="/{href}" {"aria-current=\"page\"" if active == href else ""}>{label}</a>'
                   for href, label in [("index.html", "Accueil"), ("projets.html", "Projets"),
                                       ("a-propos.html", "À propos"), ("contact.html", "Contact")])
-    return f'''<!doctype html>
+    page = f'''<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="{e(description)}"><meta name="robots" content="noindex, nofollow">
 <title>{e(title)} · Clive Gouala</title><link rel="stylesheet" href="/assets/style.css">
@@ -96,6 +101,7 @@ def layout(title: str, description: str, active: str, body: str) -> str:
 <footer class="footer"><div class="shell"><div class="footer-top"><p>Une idée en tête ?<br><a href="mailto:sigmosart@gmail.com">Créons quelque chose <span>ensemble ↗</span></a></p></div>
 <div class="footer-bottom"><span>© Clive Gouala · Portfolio</span><span>Réalisateur vidéo · Designer graphique · Photographe</span><a href="#contenu">Retour en haut ↑</a></div></div></footer>
 <script src="/assets/app.js" defer></script></body></html>'''
+    return page.replace('↗', ARROW)
 
 
 def card(p: dict, index: int, featured=False) -> str:

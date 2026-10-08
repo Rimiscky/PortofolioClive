@@ -5,7 +5,7 @@ Site éditorial statique et mobile-first basé sur le book PDF remis pour le pro
 ## Parcours
 
 - Accueil : direction créative et sélection de réalisations.
-- Projets : galerie filtrable par discipline et 11 études de cas individuelles.
+- Projets : galerie filtrable par discipline et 11 pages de réalisations individuelles. Les briefs et résultats clients restent à documenter avec Clive avant de présenter ces pages comme des études de cas.
 - À propos : portrait, démarche et outils cités dans le book.
 - Contact : lien direct vers l'adresse indiquée dans le book, sans formulaire ni collecte.
 

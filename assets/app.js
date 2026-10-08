@@ -42,4 +42,5 @@
       if (empty) empty.hidden = visible !== 0;
     }));
   }
+  document.documentElement.classList.add('js-ready');
 })();

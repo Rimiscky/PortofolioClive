@@ -30,6 +30,14 @@ class InteractionTests(unittest.TestCase):
         cls.browser.close(); cls.pw.stop()
         cls.server.shutdown(); cls.server.server_close(); cls.tmp.cleanup()
 
+    def test_navigation_remains_accessible_without_javascript(self):
+        page = self.browser.new_page(viewport={'width': 375, 'height': 812}, java_script_enabled=False)
+        page.goto(self.base + '/index.html')
+        nav = page.get_by_role('navigation', name='Navigation principale')
+        self.assertTrue(nav.is_visible())
+        self.assertTrue(nav.get_by_role('link', name='Projets').is_visible())
+        page.close()
+
     def test_mobile_menu_opens_and_closes_with_escape(self):
         page = self.browser.new_page(viewport={'width': 375, 'height': 812})
         page.goto(self.base + '/index.html')

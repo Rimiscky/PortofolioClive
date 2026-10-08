@@ -42,6 +42,29 @@ PROJECTS = [
          images=[32], intro="Une sélection de compositions graphiques, affiches et essais visuels du book.",
          scope="Affiches, composition graphique"),
 ]
+IMAGE_DESCRIPTIONS = {
+    6: "Interim Industries : logo bleu à engrenage, variantes noir et blanc et applications sur textile et accessoires.",
+    7: "NG Photography : monogramme géométrique noir, palette bleue, cordon et déclinaisons du logo sur supports.",
+    8: "La Marque : logo au cintre blanc sur fond marine, avec déclinaisons sur t-shirts, casquette et boutique.",
+    9: "So Sweet : identité pâtisserie verte et dorée, logo gourmand, sac, t-shirt et palette de couleurs.",
+    11: "Sigmos Agency : symbole blanc et nom de la marque sur une photographie sombre de projecteur de cinéma.",
+    12: "Sigmos Agency : construction du symbole, déclinaisons bleues, gamme chromatique et police Poppins.",
+    13: "Sigmos Agency : déclinaisons de marque sur publication, cordon, papeterie et polo bleu et blanc.",
+    14: "Les Délices de MD : logo illustré de fruits et portrait souriant, sur fond violet traversé de rubans orange.",
+    15: "Les Délices de MD : variantes du logo, codes couleurs et applications sur bouteilles, casquette et textile.",
+    17: "Mascotte BTP : plusieurs croquis au crayon d'un poulpe ouvrier et illustration finale avec outils de chantier.",
+    19: "Sigmos Agency : sélection de visuels sociaux avec maquettes Facebook et Instagram et affiches événementielles.",
+    20: "Believe Agency : publications Instagram, couverture Facebook et visuels de services à dominante verte et marine.",
+    21: "La Marque : trois publications sociales montrant une casquette, une photographie de mode et des t-shirts.",
+    23: "Les Délices de MD : trois pots de fruits étiquetés Pomme, Orange et Goyave sur fond lumineux.",
+    24: "Les Délices de MD : packaging Pomme, Orange et Goyave présenté sur trois fonds colorés distincts.",
+    25: "Les Délices de MD : trio de pots fruités sur fonds rouge, vert et orange, avec étiquettes assorties.",
+    27: "Canaan Holding : brochure ouverte avec couverture audiovisuelle, photographies et pages intérieures imprimées.",
+    28: "Canaan Holding : doubles pages de brochure corporate montrant stratégie, production et coordonnées.",
+    29: "Canaan Holding : couverture de brochure avec caméra de cinéma et portrait d'homme d'affaires.",
+    31: "Photographie éditoriale : série de cinq portraits d'une femme sur une plage, foulard rouge et mer en arrière-plan.",
+    32: "Affiches et création : montage d'affiches événementielles, recherches de logo et mockups de sweat à capuche.",
+}
 CATEGORIES = ["Tous", "Logos", "Identité", "Social media", "Packaging", "Édition", "Photographie"]
 
 
@@ -50,6 +73,7 @@ def e(value: object) -> str:
 
 
 def picture(number: int, alt: str, *, loading="lazy", class_name="") -> str:
+    alt = IMAGE_DESCRIPTIONS.get(number, alt)
     return (f'<img class="{e(class_name)}" src="/assets/media/folio-{number:02d}.webp" '
             f'alt="{e(alt)}" loading="{loading}" width="1600" height="900">')
 

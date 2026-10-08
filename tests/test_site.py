@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 from scripts.build import build_site
@@ -21,6 +22,18 @@ class PortfolioSiteTests(unittest.TestCase):
             self.assertIn("Interim Industries", listing)
             self.assertIn("Les Délices de MD", listing)
             self.assertIn("Packaging", listing)
+
+    def test_project_images_describe_the_compositions(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp); build_site(out)
+            for page in (out / 'projets').glob('*.html'):
+                images = []
+                class Descriptions(HTMLParser):
+                    def handle_starttag(self, tag, attrs):
+                        if tag == 'img': images.append(dict(attrs).get('alt', ''))
+                Descriptions().feed(page.read_text(encoding='utf-8'))
+                self.assertTrue(images)
+                self.assertTrue(all(len(alt) > 40 and not alt.startswith('Planche') for alt in images), page.name)
 
     def test_every_local_link_and_image_resolves_and_has_alt(self):
         from html.parser import HTMLParser
